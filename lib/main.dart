@@ -6,8 +6,8 @@ import 'utilities.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final permissions = await checkpermissions();
-  final songs = await getsongs();
+  await checkpermissions();
+  await getsongs();
 
   print('passou');
 
