@@ -1,39 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_basic_musicplayer/app/class/global_variables.dart';
+import 'package:flutter_basic_musicplayer/app/class/utilities.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:just_audio/just_audio.dart';
+import 'home_controller.dart';
 
-import 'package:flutter_basic_musicplayer/screens/song_screen.dart';
+class HomePage extends StatefulWidget {
+  final String title;
+  const HomePage({Key key, this.title = "Home"}) : super(key: key);
 
-import '../global_variables.dart';
-import '../utilities.dart';
-
-// int lastSong;
-
-class HomeScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // print(Permission.storage.status);
-    // Permission.storage.request();
-
-    // listSongs.
-    // print(listSongs.forEach((i) => i.path));
-    // Future<void> teste() async {
-    //   print(Permission.storage.status);
-    //   if (!await Permission.storage.isGranted) {
-    //     Permission.storage.request();
-    //   }
-    //   // if (await Permission.contacts.request().isGranted) {}
-    //   // Map<Permission, PermissionStatus> statuses = await [
-    //   //   Permission.storage,
-    //   // ].request();
-    //   // print(statuses[Permission.storage]);
-    // }
-  }
+class _HomePageState extends ModularState<HomePage, HomeController> {
+  //use 'controller' variable to access controller
 
   @override
   Widget build(BuildContext context) {
@@ -71,12 +52,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   return ListTile(
                     title: Text(listSongs[index].title),
                     onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => SongScreen(listSongs[index]),
-                        ),
-                      );
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (_) => SongScreen(listSongs[index]),
+                      //   ),
+                      // );
                       playsong(player, index);
+                      actualSong = listSongs[index].id;
+                      Modular.to
+                          .pushNamed('/player', arguments: listSongs[index]);
+
                       // print(listSongs[index].path);
                       // var duration = player.setFilePath(listSongs[index].path);
                     },
