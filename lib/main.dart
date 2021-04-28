@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_basic_musicplayer/permissions.dart';
-import 'package:flutter_basic_musicplayer/screens/home_screen.dart';
+import 'package:flutter_basic_musicplayer/app/app_module.dart';
+import 'package:flutter_basic_musicplayer/app/modules/home/home_controller.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
-import 'utilities.dart';
+import 'app/class/permissions.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await checkpermissions();
-  await getsongs();
-
-  print('passou');
-
-  runApp(
-    MaterialApp(
-      home: HomeScreen(),
-    ),
-  );
+  await utilities.getsongs();
+  runApp(ModularApp(module: AppModule()));
 }

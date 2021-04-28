@@ -1,44 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:flutter_basic_musicplayer/app/class/utilities.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'home_controller.dart';
 
-import 'package:flutter_basic_musicplayer/screens/song_screen.dart';
+class HomePage extends StatefulWidget {
+  final String title;
+  const HomePage({Key key, this.title = "Home"}) : super(key: key);
 
-import '../global_variables.dart';
-import '../utilities.dart';
-
-// int lastSong;
-
-class HomeScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // print(Permission.storage.status);
-    // Permission.storage.request();
-
-    // listSongs.
-    // print(listSongs.forEach((i) => i.path));
-    // Future<void> teste() async {
-    //   print(Permission.storage.status);
-    //   if (!await Permission.storage.isGranted) {
-    //     Permission.storage.request();
-    //   }
-    //   // if (await Permission.contacts.request().isGranted) {}
-    //   // Map<Permission, PermissionStatus> statuses = await [
-    //   //   Permission.storage,
-    //   // ].request();
-    //   // print(statuses[Permission.storage]);
-    // }
-  }
+class _HomePageState extends ModularState<HomePage, HomeController> {
+  //use 'controller' variable to access controller
+  // HomeController homeController = new HomeController();
 
   @override
   Widget build(BuildContext context) {
-    final player = AudioPlayer();
-
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -52,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return ListTile(
               title: Text('Pausar'),
               onTap: () {
-                pauseOrresume(player);
+                utilities.pauseOrresume(globalVariables.player);
               },
             );
           },
@@ -65,18 +44,23 @@ class _HomeScreenState extends State<HomeScreen> {
               height: constraints.maxHeight * .9,
               width: size.width,
               child: ListView.builder(
-                itemCount: listSongs.length,
+                itemCount: globalVariables.listSongs.length,
                 itemBuilder: (context, index) {
                   // print(index);
                   return ListTile(
-                    title: Text(listSongs[index].title),
+                    title: Text(globalVariables.listSongs[index].title),
                     onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => SongScreen(listSongs[index]),
-                        ),
-                      );
-                      playsong(player, index);
+                      // Navigator.of(context).push(
+                      //   MaterialPageRoute(
+                      //     builder: (_) => SongScreen(listSongs[index]),
+                      //   ),
+                      // );
+                      utilities.playsong(globalVariables.player, index);
+                      globalVariables.actualSong =
+                          globalVariables.listSongs[index];
+                      Modular.to.pushNamed('/player',
+                          arguments: globalVariables.listSongs[index]);
+
                       // print(listSongs[index].path);
                       // var duration = player.setFilePath(listSongs[index].path);
                     },
@@ -90,7 +74,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: constraints.maxWidth,
                 color: Colors.cyan,
                 child: Center(
-                  child: Text('Musica Atual'),
+                  child: Observer(builder: (_) {
+                    return globalVariables.actualSong == null
+                        ? Text('Em desenvolvimento')
+                        : Text(globalVariables.actualSong.title);
+                  }),
                 ),
               ),
               onTap: () {
