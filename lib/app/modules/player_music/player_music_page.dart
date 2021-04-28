@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
+import 'package:flutter_basic_musicplayer/app/class/utilities.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'player_music_controller.dart';
 
 class PlayerMusicPage extends StatefulWidget {
-  final SongInfo song;
-  const PlayerMusicPage({Key key, this.song}) : super(key: key);
+  // final SongInfo song;
+  // const PlayerMusicPage({Key key, this.song}) : super(key: key);
 
   @override
   _PlayerMusicPageState createState() => _PlayerMusicPageState();
@@ -44,10 +46,11 @@ class _PlayerMusicPageState
                       // ),
                       child: Image(
                         image: (() {
-                          if (widget.song.albumArtwork == null) {
+                          if (globalVariables.actualSong.albumArtwork == null) {
                             return AssetImage('lib/assets/images/notImage.png');
                           } else {
-                            return FileImage(File(widget.song.albumArtwork));
+                            return FileImage(
+                                File(globalVariables.actualSong.albumArtwork));
                           }
                         }()),
                         fit: BoxFit.cover,
@@ -72,12 +75,13 @@ class _PlayerMusicPageState
                             color: Colors.transparent,
                             image: DecorationImage(
                                 image: (() {
-                                  if (widget.song.albumArtwork == null) {
+                                  if (globalVariables.actualSong.albumArtwork ==
+                                      null) {
                                     return AssetImage(
                                         'lib/assets/images/notImage.png');
                                   } else {
-                                    return FileImage(
-                                        File(widget.song.albumArtwork));
+                                    return FileImage(File(globalVariables
+                                        .actualSong.albumArtwork));
                                   }
                                 }()),
                                 fit: BoxFit.cover),
@@ -87,12 +91,14 @@ class _PlayerMusicPageState
                       ),
                     ),
                     Positioned(
-                      child: AppBar(
-                        title: Text(widget.song.title),
-                        // backgroundColor: Color.fromRGBO(0, 0, 0, .75),
-                        backgroundColor: Color.fromRGBO(0, 0, 0, .15),
-                        // elevation: 0.0,
-                      ), //Talvez .7
+                      child: Observer(builder: (_) {
+                        return AppBar(
+                          title: Text(globalVariables.actualSong.title),
+                          // backgroundColor: Color.fromRGBO(0, 0, 0, .75),
+                          backgroundColor: Color.fromRGBO(0, 0, 0, .15),
+                          // elevation: 0.0,
+                        );
+                      }), //Talvez .7
                     )
                   ],
                 )

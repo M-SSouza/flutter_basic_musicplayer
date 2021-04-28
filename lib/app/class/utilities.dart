@@ -1,44 +1,57 @@
+import 'package:mobx/mobx.dart';
 import 'package:flutter_audio_query/flutter_audio_query.dart';
 import 'package:just_audio/just_audio.dart';
-
 import 'global_variables.dart';
 
-Future<List<SongInfo>> getAllSongs() async {
-  // String path = await ExtStorage.getExternalStorageDirectory();
+part 'utilities.g.dart';
 
-  // Directory extDir = Directory(path);
+class Utilities = _UtilitiesBase with _$Utilities;
+GlobalVariables globalVariables = new GlobalVariables();
 
-  // List<FileSystemEntity> _files;
+abstract class _UtilitiesBase with Store {
+  @observable
+  FlutterAudioQuery audioQuery = FlutterAudioQuery();
 
-  // _files = await Future.value(extDir
-  //     .listSync(recursive: true, followLinks: false)
-  //     .where((i) => i.path.endsWith('.mp3'))
-  //     .toList());
+//   Future<List<SongInfo>> getAllSongs() async {
+//   // String path = await ExtStorage.getExternalStorageDirectory();
 
-  // print(_files.length);
+//   // Directory extDir = Directory(path);
 
-  // _files.forEach((element) {
-  //   print(element.path);
-  // });
-  // return _files;
-  final FlutterAudioQuery audioQuery = FlutterAudioQuery();
-  List<SongInfo> songs = await audioQuery.getSongs();
-  return songs;
-}
+//   // List<FileSystemEntity> _files;
 
-Future<void> getsongs() async {
-  listSongs = await getAllSongs();
-}
+//   // _files = await Future.value(extDir
+//   //     .listSync(recursive: true, followLinks: false)
+//   //     .where((i) => i.path.endsWith('.mp3'))
+//   //     .toList());
 
-playsong(AudioPlayer player, int index) async {
-  await player.setFilePath(listSongs[index].filePath);
-  await player.play();
-}
+//   // print(_files.length);
 
-pauseOrresume(AudioPlayer player) async {
-  if (player.playing) {
-    await player.pause();
-  } else {
-    player.play();
+//   // _files.forEach((element) {
+//   //   print(element.path);
+//   // });
+//   // return _files;
+
+//   globalVariables.listSongs = await audioQuery.getSongs();
+//   return songs;
+// }
+
+  @action
+  Future<void> getsongs() async {
+    globalVariables.listSongs = await audioQuery.getSongs();
+  }
+
+  @action
+  playsong(AudioPlayer player, int index) async {
+    await player.setFilePath(globalVariables.listSongs[index].filePath);
+    await player.play();
+  }
+
+  @action
+  pauseOrresume(AudioPlayer player) async {
+    if (player.playing) {
+      await player.pause();
+    } else {
+      player.play();
+    }
   }
 }

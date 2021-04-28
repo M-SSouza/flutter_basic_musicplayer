@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_basic_musicplayer/app/class/global_variables.dart';
 import 'package:flutter_basic_musicplayer/app/class/utilities.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:just_audio/just_audio.dart';
 import 'home_controller.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,11 +14,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends ModularState<HomePage, HomeController> {
   //use 'controller' variable to access controller
+  // HomeController homeController = new HomeController();
 
   @override
   Widget build(BuildContext context) {
-    final player = AudioPlayer();
-
     var size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -33,7 +31,7 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
             return ListTile(
               title: Text('Pausar'),
               onTap: () {
-                pauseOrresume(player);
+                utilities.pauseOrresume(globalVariables.player);
               },
             );
           },
@@ -46,21 +44,22 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
               height: constraints.maxHeight * .9,
               width: size.width,
               child: ListView.builder(
-                itemCount: listSongs.length,
+                itemCount: globalVariables.listSongs.length,
                 itemBuilder: (context, index) {
                   // print(index);
                   return ListTile(
-                    title: Text(listSongs[index].title),
+                    title: Text(globalVariables.listSongs[index].title),
                     onTap: () {
                       // Navigator.of(context).push(
                       //   MaterialPageRoute(
                       //     builder: (_) => SongScreen(listSongs[index]),
                       //   ),
                       // );
-                      playsong(player, index);
-                      actualSong = listSongs[index].id;
-                      Modular.to
-                          .pushNamed('/player', arguments: listSongs[index]);
+                      utilities.playsong(globalVariables.player, index);
+                      globalVariables.actualSong =
+                          globalVariables.listSongs[index];
+                      Modular.to.pushNamed('/player',
+                          arguments: globalVariables.listSongs[index]);
 
                       // print(listSongs[index].path);
                       // var duration = player.setFilePath(listSongs[index].path);
@@ -75,7 +74,11 @@ class _HomePageState extends ModularState<HomePage, HomeController> {
                 width: constraints.maxWidth,
                 color: Colors.cyan,
                 child: Center(
-                  child: Text('Musica Atual'),
+                  child: Observer(builder: (_) {
+                    return globalVariables.actualSong == null
+                        ? Text('Em desenvolvimento')
+                        : Text(globalVariables.actualSong.title);
+                  }),
                 ),
               ),
               onTap: () {

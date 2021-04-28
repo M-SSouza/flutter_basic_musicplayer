@@ -1,3 +1,4 @@
+import 'package:flutter_basic_musicplayer/app/class/utilities.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 
@@ -5,6 +6,8 @@ part 'home_controller.g.dart';
 
 @Injectable()
 class HomeController = _HomeControllerBase with _$HomeController;
+// GlobalVariables globalVariables = new GlobalVariables();
+Utilities utilities = new Utilities();
 
 abstract class _HomeControllerBase with Store {
   @observable
